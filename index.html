@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Canvas básico</title>
+    <style media="screen">
+      #miCanvas{
+        border: dotted 2px yellow;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Concepto básicos de CANVAS</h1>
+    <canvas id="miCanvas" width="1024px" height="512px">
+      Tu navegador no soporta CANVAS
+    </canvas>
+  </body>
+</html>
+<script type="text/javascript">
+/**********************
+Variables
+**********************/
+var ctx;
+var canvas; 
+var palabra;
+var letras = "QWERTYUIOPASDFGHJKLÑZXCVBNM";
+var colorTecla = "purple";
+var colorMargen = "yellow";
+var inicioX = 225;
+var inicioY = 330;
+var lon = 35;
+var margen = 20;
+
+//Arreglos
+var teclas_array = new Array();
+var letras_array = new Array();
+var palabras_array = new Array();
+
+//variables de control
+var acietos = 0;
+var errores = 0;
+
+/**********************
+Clase tecla del juego
+**********************/
+function Tecla( x, y, ancho, alto, letra ){
+  
+  this.x = x;
+  this.y = y;
+
+  this.ancho = ancho;
+  this.alto = alto;
+
+  this.letra = letra;
+
+  this.dibuja = dibujaTecla;
+
+}
+
+
+/**********************
+Clase letra del juego
+**********************/
+function Letra( x, y, ancho, alto, letra ){
+
+  this.x = x;
+  this.y = y;
+
+  this.ancho = ancho;
+  this.alto = alto;
+
+  this.letra = letra;
+
+  this.dibuja = dibujaCajaLetra;
+  this.dibujaLetra = dibujaLetraLetra;
+
+}
+
+//
+palabras_array.push("PEGASO");
+palabras_array.push("AFRODITA");
+palabras_array.push("ATENEA");
+palabras_array.push("HARES");
+palabras_array.push("CRONOS");
+palabras_array.push("HERMES");
+palabras_array.push("DIONISIO");
+palabras_array.push("PERSEO");
+palabras_array.push("POSEIDON");
+palabras_array.push("APOLO");
+
+/**********************
+Metodo para dibujar la tecla 
+**********************/
+function dibujaTecla(){
+  
+  var w = this.ancho;
+  var h = this.alto;
+
+  ctx.fillStyle = colorTecla;
+  ctx.strokeStyle = colorMargen;
+  ctx.fillRect( this.x, this.y, this.ancho, this.alto );
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 20px Courier";
+  ctx.fillText( this.letra, this.x + w / 2 - 5, this.y + h / 2 + 5 );
+
+}
+
+/**********************
+Metodo para dibujar la caja de la letra
+**********************/
+function dibujaCajaLetra(){
+  
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.fillRect( this.x, this.y, this.ancho, this.alto );
+  ctx.strokeRect( this.x, this.y, this.ancho, this.alto ); 
+  
+}
+
+/**********************
+Metodo para dibujar el teclado
+**********************/
+function teclado(){
+  
+  var ren = 0;
+  var col = 0;
+  var letra = "";
+  var miLetra;
+  var x = inicioX;
+  var y = inicioY;
+  for( var i = 0; i < letras.length; i++ ){
+    
+    letra = letras.substr(i,1);
+    
+    miLetra = new Tecla( x, y, lon, lon, letra );
+    miLetra.dibuja();
+    
+    teclas_array.push(miLetra);
+
+    x += lon + margen;
+    col++;
+
+    if( col == 10 ){
+      
+      col = 0;
+      ren++;
+
+      if( ren == 2 ){
+        
+        x = 280;
+
+      }else{
+
+        x = inicioX;
+
+      }
+    }
+
+    y = inicioY + ren * 50;
+
+  }
+}
+
+
+  window.onload = function() {
+    canvas = document.getElementById('miCanvas');
+    if ( canvas && canvas.getContext ) {
+      ctx = canvas.getContext("2d");
+      if ( ctx ) {
+        teclado();
+      }else{
+        alert("Error al crear tu contexto");
+      }
+    }
+  }
+</script>
