@@ -72,7 +72,7 @@ function Letra( x, y, ancho, alto, letra ){
   this.letra = letra;
 
   this.dibuja = dibujaCajaLetra;
-  this.dibujaLetra = dibujaLetraLetra;
+  //this.dibujaLetra = dibujaLetraLetra;
 
 }
 
@@ -162,6 +162,52 @@ function teclado(){
   }
 }
 
+/**********************
+Metodo para dibujar la palabra secreta
+**********************/
+function pintaPalabra(){
+  
+  var w = canvas.width;
+  //var len = palabra.length;
+  var p = Math.floor( Math.random() * palabras_array.length );
+  palabra = palabras_array[p];
+  var len = palabra.length;//modificado
+
+  var ren = 0;
+  var col = 0;
+  var y = 230;
+  var lon = 50; 
+  var x = ( w - ( lon + margen ) * len ) / 2;
+
+  for ( var i = 0; i < palabra.length; i++ ){
+
+    letra = palabra.substr( i, 1 );
+    console.log(letra);
+
+    miLetra = new Letra( x, y, lon, lon, letra );
+    miLetra.dibuja();
+
+    letras_array.push(miLetra);
+
+    x += lon + margen;
+
+  }
+
+}
+
+/**********************
+Metodo para dibujar el cadalso del ahorcado
+**********************/
+function cadalso(errores){
+
+  var imagen = new Image();
+  imagen.src = "img/ahorcado" + errores + ".png";
+
+  imagen.onload = function(){
+    ctx.drawImage(imagen,390,20,180,180);
+  }
+}
+
 
   window.onload = function() {
     canvas = document.getElementById('miCanvas');
@@ -169,6 +215,8 @@ function teclado(){
       ctx = canvas.getContext("2d");
       if ( ctx ) {
         teclado();
+        pintaPalabra();
+        cadalso(errores);
       }else{
         alert("Error al crear tu contexto");
       }
