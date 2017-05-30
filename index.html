@@ -37,7 +37,7 @@ var letras_array = new Array();
 var palabras_array = new Array();
 
 //variables de control
-var acietos = 0;
+var aciertos = 0;
 var errores = 0;
 
 /**********************
@@ -72,7 +72,7 @@ function Letra( x, y, ancho, alto, letra ){
   this.letra = letra;
 
   this.dibuja = dibujaCajaLetra;
-  //this.dibujaLetra = dibujaLetraLetra;
+  this.dibujaLetra = dibujaLetraLetra;
 
 }
 
@@ -116,6 +116,19 @@ function dibujaCajaLetra(){
   ctx.fillRect( this.x, this.y, this.ancho, this.alto );
   ctx.strokeRect( this.x, this.y, this.ancho, this.alto ); 
   
+}
+
+/**********************
+Metodo para dibujar la letra acertada
+**********************/
+function dibujaLetraLetra(){
+
+  var w = this.ancho;
+  var h = this.alto;
+
+  ctx.fillStyle = "black";
+  ctx.font = "bold 40px Courier";
+  ctx.fillText(this.letra, this.x + w / 2 -12, this.y + h / 2 + 14);
 }
 
 /**********************
@@ -207,6 +220,64 @@ function cadalso(errores){
     ctx.drawImage(imagen,390,20,180,180);
   }
 }
+/**********************
+Metodo para ajustar las coordenadas 
+**********************/
+function ajusta( xx, yy ){
+  
+  var posCanvas = canvas.getBoundingClientRect();
+  
+  var x = xx - posCanvas.left;
+  var y = yy - posCanvas.top;
+
+  return {x:x, y:y}
+}
+
+/**********************
+Metodo para seleccionar una letra 
+**********************/
+function selecciona(e){
+
+  var pos = ajusta( e.clientX, e.clientY ); 
+
+  var x = pos.x;
+  var y = pos.y;
+
+  var tecla;
+  var bandera = false;
+
+  var i;
+
+  for( i = 0; i < teclas_array.length; i++ ){
+    
+    tecla = teclas_array[i];
+
+    if( tecla.x > 0 ){
+      if( (x > tecla.x) && (x < tecla.x + tecla.ancho ) && (y > tecla.y) && (y < tecla.y + tecla.alto)){
+        break;
+      } 
+    }
+  }   
+
+  if( i < teclas_array.length ){
+    
+    for( var i = 0; i < palabra.length; i++ ){
+      
+      letra = palabra.substr( i, 1 );
+      
+      if( letra == tecla.letra ){
+
+        caja = letras_array[i];
+        caja.dibujaLetra();
+        
+        aciertos++;
+        bandera = true;
+      
+      }
+    }
+  }
+}
+
 
 
   window.onload = function() {
@@ -217,6 +288,7 @@ function cadalso(errores){
         teclado();
         pintaPalabra();
         cadalso(errores);
+        canvas.addEventListener("click",selecciona,false);
       }else{
         alert("Error al crear tu contexto");
       }
